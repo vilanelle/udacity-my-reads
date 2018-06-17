@@ -48,7 +48,7 @@ body, .app {
   right: 25px;
   bottom: 25px;
 }
-.open-search a {
+.open-search p {
   display: block;
   width: 50px;
   height: 50px;
@@ -65,11 +65,11 @@ body, .app {
 /* search page */
 
 .search-books-bar {
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 5;
+  /* top: 0;
+  left: 0; */
+  /* z-index: 5; */
   display: flex;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 0 6px rgba(0,0,0,0.23);
 }
