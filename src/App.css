@@ -159,7 +159,14 @@ body, .app {
   height: 100%;
   opacity: 0;
   cursor: pointer;
+  padding: 5px;
 }
+
+.book-shelf-changer select .selected {
+  font-weight: bold;
+  font-style: italic;
+}
+
 
 /* book cover */
 
