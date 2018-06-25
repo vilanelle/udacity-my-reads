@@ -12,10 +12,12 @@ class BooksList extends React.Component {
     handleOnChange = (e) => {
         const currShelf = e.target.dataset.shelf;
         const newShelf = e.target.value;
+        const index = e.target.dataset.key;
+
         if (newShelf === 'none') {
             return;
         }
-        const index = e.target.dataset.key;
+
         this.props.updateBookList(currShelf, newShelf, index);
     }
 
@@ -28,11 +30,12 @@ class BooksList extends React.Component {
             <select
                 data-key={index}
                 data-shelf={book.shelf}
-                onChange={this.handleOnChange}>
+                onChange={this.handleOnChange}
+                value={book.shelf}>
                 <option value="none" disabled>Move to...</option>
-                <option className={this.getActiveShelfClass(book.shelf, 'currentlyReading')} value="currentlyReading"> Currently Reading</option>
-                <option className={this.getActiveShelfClass(book.shelf, 'wantToRead')} value="wantToRead"> Want to Read</option>
-                <option className={this.getActiveShelfClass(book.shelf, 'read')} value="read">Read</option>
+                <option value="currentlyReading" className={this.getActiveShelfClass(book.shelf, "currentlyReading")}> Currently Reading</option>
+                <option value="wantToRead" className={this.getActiveShelfClass(book.shelf, "wantToRead")}> Want to Read</option>
+                <option value="read" className={this.getActiveShelfClass(book.shelf, "read")}>Read</option>
                 <option value="none">None</option>
             </select>
         )
@@ -46,14 +49,14 @@ class BooksList extends React.Component {
                         <div className="book-cover" style={{
                             width: 128,
                             height: 193,
-                            backgroundImage: `url("${book.imageLinks.thumbnail}")`
+                            backgroundImage: `url("${book.imageLinks && book.imageLinks.thumbnail && book.imageLinks.thumbnail}")`
                         }}></div>
                         <div className="book-shelf-changer">
                             {this.getSelect(book, index)}
                         </div>
                     </div>
-                    <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{book.authors.map((author, i) => {
+                    <div className="book-title">{book.title && book.title}</div>
+                    <div className="book-authors">{book.authors && book.authors.map((author, i) => {
                         return (
                             <span key={i}>{author}</span>
                         )

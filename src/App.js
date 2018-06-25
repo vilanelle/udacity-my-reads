@@ -7,7 +7,6 @@ import BooksList from './BooksList';
 import Search from './Search';
 
 // TODO 
-// - fix book moving (index disappears when book with smaller index moved first)
 // - persist state
 // - select dropdown should show book shelf
 // - search functionality should show books with select
@@ -46,14 +45,14 @@ class BooksApp extends React.Component {
   }
 
   updateBooks = (currShelf, newShelf, index) => {
+    let newState = {...this.state};
     const updatedBook = {...this.state.books[currShelf][index]};
     updatedBook.shelf = newShelf;
-    let newState = {...this.state};
     newState.books[newShelf].push(updatedBook); 
     newState.books[currShelf] = newState.books[currShelf].filter((el, i) => i !== Number(index));
-    this.setState(newState)
-    console.log(this.state)
+    this.setState(state => newState);
   }
+
  
   render() {
     return (
