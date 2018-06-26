@@ -29,6 +29,7 @@ class BooksList extends React.Component {
         return (
             <select
                 data-key={index}
+                data-id={book.id}
                 data-shelf={book.shelf}
                 onChange={this.handleOnChange}
                 value={book.shelf}>

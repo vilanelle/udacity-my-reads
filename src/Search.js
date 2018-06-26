@@ -13,7 +13,7 @@ class Search extends React.Component {
     handleChange = (e) => {
         this.setState({ query: e.target.value })
     }
-
+    // handle submit of book search form
     handleSubmit = (e) => {
         e.preventDefault();
         if (this.state.query) {
@@ -33,9 +33,52 @@ class Search extends React.Component {
         }
     }
 
-    handleBookClick = (e) => this.props.addBook(this.state.booksFound[e.target.dataset.key])
+    // update book list
+    handleOnChange = (e) => {
+        const shelf = e.target.value;
+        if(shelf === 'none') {
+            return;
+        }
+        const bookId = e.target.dataset.key;
+        const bookToAdd = this.state.booksFound.find(b => b.id === bookId);
+        this.props.addBook(bookToAdd, shelf);
+    }
 
+    getActiveShelfClass = (shelf, value) => {
+        return shelf === value ? 'selected' : '';
+    }
+    
+    getActiveSelectOption = (id) => {
+        const { books } = this.props;
+        const shelves = Object.keys(this.props.books);
+        let currShelf = 'none';
+        shelves.map(shelf => {
+            books[shelf].map(book => {
+             if (id === book.id) {
+                 currShelf = shelf;
+             }   
+            });
+        });
+        
+        return currShelf;
+    }
 
+    getSelect = (book) => {
+        const currShelf = this.getActiveSelectOption(book.id);
+        return (
+            <select
+                data-key={book.id}
+                onChange={this.handleOnChange}
+                defaultValue={currShelf}>
+                <option value="none" disabled>Add to app...</option>
+                <option value="currentlyReading" className={this.getActiveShelfClass(currShelf, "currentlyReading")}> Currently Reading</option>
+                <option value="wantToRead" className={this.getActiveShelfClass(currShelf, "wantToRead")}> Want to Read</option>
+                <option value="read" className={this.getActiveShelfClass(currShelf, "read")}>Read</option>
+                <option value="none">None</option>
+            </select>
+        )
+    }
+    
     render() {
         return (
             <div className="search-books">
@@ -64,6 +107,9 @@ class Search extends React.Component {
                                     <div className="book" >
                                         <div className="book-top">
                                             <div onClick={this.handleBookClick}  data-key={i}  className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks && book.imageLinks.thumbnail && book.imageLinks.thumbnail}")` }}></div>
+                                                <div className="book-shelf-changer">
+                                                {this.getSelect(book)}
+                                              </div>
                                         </div>
                                     </div>
                                     <div className="book-title">{book.title && book.title}</div>

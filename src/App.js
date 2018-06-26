@@ -7,9 +7,9 @@ import BooksList from './BooksList';
 import Search from './Search';
 
 // TODO 
+// NOW DOING - select on search should add book; prevent from adding same book multiple times
+// - refactor book shelves management to use id, not index
 // - persist state
-// - select dropdown should show book shelf
-// - search functionality should show books with select
 
 class BooksApp extends React.Component {
   state = {
@@ -32,9 +32,29 @@ class BooksApp extends React.Component {
     });
   }
 
-  addBook = (b) => {
-    b.shelf = 'wantToRead';
-    this.state.books.wantToRead.push(b);
+  addBook = (book, shelf) => {
+    // const { books } = this.state.books;
+    // const bookOnList =  this.getBookFromCurrentList(book.id);
+    // if (bookOnList) {
+    //   if (bookOnList.shelf !== shelf) {
+    //     book.shelf = shelf;
+    //     this.state.books[shelf].push(book);
+    // this.setState(state => ({
+    //   books: {
+    //     currentlyReading: this.state.books.currentlyReading,
+    //     wantToRead: this.state.books.wantToRead,
+    //     read: this.state.books.read
+    //   }
+    // }))
+    // return;
+    //   } else {
+    //     return;
+    //   }
+    // }
+    //refactor - no single source of truth (shelf vs. store)
+    book.shelf = shelf;
+    // refactor
+    this.state.books[shelf].push(book);
     this.setState(state => ({
       books: {
         currentlyReading: this.state.books.currentlyReading,
@@ -43,6 +63,19 @@ class BooksApp extends React.Component {
       }
     }))
   }
+
+  // getBookFromCurrentList = (id) => {
+  //   const { books } = this.state.books;
+  //   let book = null;
+  //   Object.keys(books).map( key => {
+  //     books[key].map( b => {
+  //       if (b.id === id) {
+  //         book = b;
+  //       }
+  //     });
+  //   })
+  //   return book;
+  // }
 
   updateBooks = (currShelf, newShelf, index) => {
     let newState = {...this.state};
@@ -66,12 +99,13 @@ class BooksApp extends React.Component {
             books={this.state.books}
             updateBookList={this.updateBooks} />
           )} />
-          <Route exact path='/search' render={({ history }) => (
-            <Search addBook={(b) => {
-              this.addBook(b);
-              history.push('/');
-            }
-            } />
+          <Route exact path='/search' render={() => (
+            <Search
+              addBook={(book, shelf) => {
+                this.addBook(book, shelf);
+                }}
+              books={this.state.books} 
+             />
           )} />
 
         </div>
