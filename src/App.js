@@ -1,14 +1,12 @@
-import React from 'react';
-import { Route } from 'react-router-dom';
-import * as BooksAPI from './BooksAPI';
-import './App.css';
+import React from "react";
+import { Route } from "react-router-dom";
+import * as BooksAPI from "./BooksAPI";
+import "./App.css";
 // components
-import BooksList from './BooksList';
-import Search from './Search';
+import BooksList from "./BooksList";
+import Search from "./Search";
 
-// TODO 
-// NOW DOING - select on search should add book; prevent from adding same book multiple times
-// - refactor book shelves management to use id, not index
+// TODO
 // - persist state
 
 class BooksApp extends React.Component {
@@ -18,75 +16,61 @@ class BooksApp extends React.Component {
       wantToRead: [],
       read: []
     }
-  }
+  };
 
   componentDidMount() {
     BooksAPI.getAll().then(books => {
       let allBooks = {};
-      allBooks.currentlyReading = books.filter(book => book.shelf === 'currentlyReading');
-      allBooks.wantToRead = books.filter(book => book.shelf === 'wantToRead');
-      allBooks.read = books.filter(book => book.shelf === 'read');
+      allBooks.currentlyReading = books.filter(
+        book => book.shelf === "currentlyReading"
+      );
+      allBooks.wantToRead = books.filter(book => book.shelf === "wantToRead");
+      allBooks.read = books.filter(book => book.shelf === "read");
       this.setState(state => ({
         books: allBooks
-      }))
+      }));
     });
   }
 
+  getBookFromList = id => {
+    const { books } = this.state;
+    let book = null;
+    Object.keys(books).map(key => {
+      books[key].map(b => {
+        if (b.id === id) {
+          book = b;
+        }
+        return null;
+      });
+      return null;
+    });
+    return book;
+  };
+
   addBook = (book, shelf) => {
-    // const { books } = this.state.books;
-    // const bookOnList =  this.getBookFromCurrentList(book.id);
-    // if (bookOnList) {
-    //   if (bookOnList.shelf !== shelf) {
-    //     book.shelf = shelf;
-    //     this.state.books[shelf].push(book);
-    // this.setState(state => ({
-    //   books: {
-    //     currentlyReading: this.state.books.currentlyReading,
-    //     wantToRead: this.state.books.wantToRead,
-    //     read: this.state.books.read
-    //   }
-    // }))
-    // return;
-    //   } else {
-    //     return;
-    //   }
-    // }
-    //refactor - no single source of truth (shelf vs. store)
+    const { books } = this.state;
+    const bookOnList = this.getBookFromList(book.id);
+    if (bookOnList) {
+      books[bookOnList.shelf] = books[bookOnList.shelf].filter(
+        b => b.id !== bookOnList.id
+      );
+    }
     book.shelf = shelf;
-    // refactor
-    this.state.books[shelf].push(book);
-    this.setState(state => ({
-      books: {
-        currentlyReading: this.state.books.currentlyReading,
-        wantToRead: this.state.books.wantToRead,
-        read: this.state.books.read
-      }
-    }))
-  }
+    books[shelf].push(book);
+    this.setState(state => ({ books }));
+  };
 
-  // getBookFromCurrentList = (id) => {
-  //   const { books } = this.state.books;
-  //   let book = null;
-  //   Object.keys(books).map( key => {
-  //     books[key].map( b => {
-  //       if (b.id === id) {
-  //         book = b;
-  //       }
-  //     });
-  //   })
-  //   return book;
-  // }
+  updateBooks = (newShelf, id) => {
+    const { books } = this.state;
+    const bookToUpdate = this.getBookFromList(id);
+    books[bookToUpdate.shelf] = books[bookToUpdate.shelf].filter(
+      b => b.id !== id
+    );
+    bookToUpdate.shelf = newShelf;
+    books[newShelf].push(bookToUpdate);
+    this.setState(state => ({ books }));
+  };
 
-  updateBooks = (currShelf, newShelf, index) => {
-    let newState = {...this.state};
-    const updatedBook = {...this.state.books[currShelf][index]};
-    updatedBook.shelf = newShelf;
-    newState.books[newShelf].push(updatedBook); 
-    newState.books[currShelf] = newState.books[currShelf].filter((el, i) => i !== Number(index));
-    this.setState(state => newState);
-  }
-
- 
   render() {
     return (
       <div className="app">
@@ -94,24 +78,32 @@ class BooksApp extends React.Component {
           <div className="list-books-title">
             <h1>MyReads</h1>
           </div>
-          <Route exact path='/' render={() => (
-            <BooksList 
-            books={this.state.books}
-            updateBookList={this.updateBooks} />
-          )} />
-          <Route exact path='/search' render={() => (
-            <Search
-              addBook={(book, shelf) => {
-                this.addBook(book, shelf);
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <BooksList
+                books={this.state.books}
+                updateBookList={this.updateBooks}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/search"
+            render={() => (
+              <Search
+                addBook={(book, shelf) => {
+                  this.addBook(book, shelf);
                 }}
-              books={this.state.books} 
-             />
-          )} />
-
+                books={this.state.books}
+              />
+            )}
+          />
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default BooksApp
+export default BooksApp;
