@@ -70,9 +70,7 @@ class BooksList extends React.Component {
                   book.imageLinks.thumbnail}")`
               }}
             />
-            <div className="book-shelf-changer">
-              {this.getSelect(book)}
-            </div>
+            <div className="book-shelf-changer">{this.getSelect(book)}</div>
           </div>
           <div className="book-title">{book.title && book.title}</div>
           <div className="book-authors">
@@ -101,14 +99,17 @@ class BooksList extends React.Component {
     );
   };
 
+  getBookList = books => {
+    return Object.keys(books).map(key => {
+      return this.getBookShelf(books[key], key);
+    });
+  };
+
   render() {
     const { books } = this.props;
     return (
       <div className="list-books-content">
-      {/* refactor to extract into single function getbooklist  */}
-        {Object.keys(books).map(key => {
-          return this.getBookShelf(books[key], key);
-        })}
+        {this.getBookList(books)}
         <Link to="/search" className="open-search">
           <p>+</p>
         </Link>
