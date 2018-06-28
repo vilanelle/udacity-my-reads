@@ -5,9 +5,6 @@ import "./App.css";
 import BooksList from "./BooksList";
 import Search from "./Search";
 
-// TODO
-// - persist state
-
 class BooksApp extends React.Component {
   storage;
 
@@ -20,7 +17,6 @@ class BooksApp extends React.Component {
   };
 
   componentDidMount() {
-
     this.storage = window.localStorage ? window.localStorage : null;
     // if book list not cached get it from api
     if (!this.storage.books) {
@@ -32,10 +28,14 @@ class BooksApp extends React.Component {
         allBooks.wantToRead = books.filter(book => book.shelf === "wantToRead");
         allBooks.read = books.filter(book => book.shelf === "read");
         this.storage.setItem('books', JSON.stringify(allBooks));
-      });
-    } 
         const initialState = JSON.parse(this.storage.getItem("books"));
         this.setState({ books: initialState });
+      });
+    } else {
+      const initialState = JSON.parse(this.storage.getItem("books"));
+      this.setState({ books: initialState });
+    }
+    
     // window.localStorage.clear();
   }
 
@@ -95,6 +95,7 @@ class BooksApp extends React.Component {
             exact
             path="/"
             render={() => (
+              this.state.books && 
               <BooksList
                 books={this.state.books}
                 updateBookList={this.updateBooks}

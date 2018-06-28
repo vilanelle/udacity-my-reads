@@ -109,7 +109,7 @@ class BooksList extends React.Component {
     const { books } = this.props;
     return (
       <div className="list-books-content">
-        {this.getBookList(books)}
+        {books && this.getBookList(books)}
         <Link to="/search" className="open-search">
           <p>+</p>
         </Link>
