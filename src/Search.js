@@ -9,6 +9,7 @@ class Search extends React.Component {
     booksFound: []
   };
 
+  
   // update state as user inputs query
   handleChange = e => {
     this.setState({ query: e.target.value });
@@ -45,7 +46,8 @@ class Search extends React.Component {
     const bookToAdd = this.state.booksFound.find(b => b.id === bookId);
     this.props.addBook(bookToAdd, shelf);
   };
-
+  
+  // select should reflect current book shelf
   getActiveShelfClass = (shelf, value) => {
     return shelf === value ? "selected" : "";
   };
@@ -88,7 +90,6 @@ class Search extends React.Component {
           value="wantToRead"
           className={this.getActiveShelfClass(currShelf, "wantToRead")}
         >
-          {" "}
           Want to Read
         </option>
         <option

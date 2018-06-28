@@ -2,7 +2,6 @@ import React from "react";
 import { Route } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
-// components
 import BooksList from "./BooksList";
 import Search from "./Search";
 
@@ -10,6 +9,8 @@ import Search from "./Search";
 // - persist state
 
 class BooksApp extends React.Component {
+  storage;
+
   state = {
     books: {
       currentlyReading: [],
@@ -19,17 +20,29 @@ class BooksApp extends React.Component {
   };
 
   componentDidMount() {
-    BooksAPI.getAll().then(books => {
-      let allBooks = {};
-      allBooks.currentlyReading = books.filter(
-        book => book.shelf === "currentlyReading"
-      );
-      allBooks.wantToRead = books.filter(book => book.shelf === "wantToRead");
-      allBooks.read = books.filter(book => book.shelf === "read");
-      this.setState(state => ({
-        books: allBooks
-      }));
-    });
+
+    this.storage = window.localStorage ? window.localStorage : null;
+    // if book list not cached get it from api
+    if (!this.storage.books) {
+      BooksAPI.getAll().then(books => {
+        let allBooks = {};
+        allBooks.currentlyReading = books.filter(
+          book => book.shelf === "currentlyReading"
+        );
+        allBooks.wantToRead = books.filter(book => book.shelf === "wantToRead");
+        allBooks.read = books.filter(book => book.shelf === "read");
+        this.storage.setItem('books', JSON.stringify(allBooks));
+      });
+    } 
+        const initialState = JSON.parse(this.storage.getItem("books"));
+        this.setState({ books: initialState });
+    // window.localStorage.clear();
+  }
+
+  updateStateAndStorage = books => {
+    console.log('st and st updated')
+    this.setState({ books: books });
+    this.storage.setItem('books', JSON.stringify(books));
   }
 
   getBookFromList = id => {
@@ -57,7 +70,7 @@ class BooksApp extends React.Component {
     }
     book.shelf = shelf;
     books[shelf].push(book);
-    this.setState(state => ({ books }));
+    this.updateStateAndStorage(books)
   };
 
   updateBooks = (newShelf, id) => {
@@ -68,7 +81,7 @@ class BooksApp extends React.Component {
     );
     bookToUpdate.shelf = newShelf;
     books[newShelf].push(bookToUpdate);
-    this.setState(state => ({ books }));
+    this.updateStateAndStorage(books)
   };
 
   render() {
