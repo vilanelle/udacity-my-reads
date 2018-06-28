@@ -9,17 +9,14 @@ class Search extends React.Component {
     booksFound: []
   };
 
-  
   // update state as user inputs query
   handleChange = e => {
-    this.setState({ query: e.target.value });
-  };
-  // handle submit of book search form
-  handleSubmit = e => {
-    e.preventDefault();
-    if (this.state.query) {
+    const query = e.target.value;
+    this.setState({ query: query });
+    if (query) {
+      this.setState({ booksFound: [] });
       this.setState({ prompt: "" });
-      BooksAPI.search(this.state.query).then(res => {
+      BooksAPI.search(query).then(res => {
         // handle empty API response
         if (!res.error) {
           this.setState({ booksFound: res });
@@ -34,6 +31,10 @@ class Search extends React.Component {
       // prompt for search input if input null
       this.setState({ prompt: "Please enter search term" });
     }
+  };
+  // handle submit of book search form
+  handleSubmit = e => {
+    e.preventDefault();
   };
 
   // update book list
