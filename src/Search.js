@@ -9,7 +9,7 @@ class Search extends React.Component {
     booksFound: []
   };
 
-  // update state as user inputs query
+  // return search results on user input
   handleChange = e => {
     const query = e.target.value;
     this.setState({ query: query });
@@ -30,9 +30,10 @@ class Search extends React.Component {
     } else {
       // prompt for search input if input null
       this.setState({ prompt: "Please enter search term" });
+      this.setState({ booksFound: [] });
     }
   };
-  // handle submit of book search form
+  // disable submit of book search form
   handleSubmit = e => {
     e.preventDefault();
   };
@@ -72,6 +73,7 @@ class Search extends React.Component {
 
   getSelect = book => {
     const currShelf = this.getActiveSelectOption(book.id);
+    console.log(currShelf)
     return (
       <select
         data-key={book.id}
@@ -99,7 +101,10 @@ class Search extends React.Component {
         >
           Read
         </option>
-        <option value="none">None</option>
+        <option
+            value="none"
+            className={this.getActiveShelfClass(currShelf, "none")}
+        >None</option>
       </select>
     );
   };
