@@ -1,8 +1,8 @@
-import React from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 
-class Search extends React.Component {
+class Search extends Component {
   state = {
     query: "",
     prompt: "",
@@ -41,15 +41,12 @@ class Search extends React.Component {
   // update book list
   handleOnChange = e => {
     const shelf = e.target.value;
-    if (shelf === "none") {
-      return;
-    }
     const bookId = e.target.dataset.key;
     const bookToAdd = this.state.booksFound.find(b => b.id === bookId);
     this.props.addBook(bookToAdd, shelf);
   };
   
-  // select should reflect current book shelf
+  // current book shelf should be reflected in select display & value
   getActiveShelfClass = (shelf, value) => {
     return shelf === value ? "selected" : "";
   };
@@ -73,7 +70,6 @@ class Search extends React.Component {
 
   getSelect = book => {
     const currShelf = this.getActiveSelectOption(book.id);
-    console.log(currShelf)
     return (
       <select
         data-key={book.id}

@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import BooksList from "./BooksList";
 import Search from "./Search";
 
-class BooksApp extends React.Component {
+class BooksApp extends Component {
   storage;
 
   state = {
@@ -35,12 +35,9 @@ class BooksApp extends React.Component {
       const initialState = JSON.parse(this.storage.getItem("books"));
       this.setState({ books: initialState });
     }
-    
-    // window.localStorage.clear();
   }
 
   updateStateAndStorage = books => {
-    console.log('st and st updated')
     this.setState({ books: books });
     this.storage.setItem('books', JSON.stringify(books));
   }
@@ -60,27 +57,35 @@ class BooksApp extends React.Component {
     return book;
   };
 
-  addBook = (book, shelf) => {
+  updateBookListFromSearchView = (book, shelf) => {
     const { books } = this.state;
     const bookOnList = this.getBookFromList(book.id);
+    // remove book from current shelf, if applicable
     if (bookOnList) {
       books[bookOnList.shelf] = books[bookOnList.shelf].filter(
         b => b.id !== bookOnList.id
       );
     }
-    book.shelf = shelf;
-    books[shelf].push(book);
+    // if new shelf selected add book to new shelf
+    if (shelf !== 'none') {
+      book.shelf = shelf;
+      books[shelf].push(book);
+    }
     this.updateStateAndStorage(books)
   };
 
-  updateBooks = (newShelf, id) => {
+  updateBookList = (newShelf, id) => {
     const { books } = this.state;
     const bookToUpdate = this.getBookFromList(id);
+    // remove book from current shelf
     books[bookToUpdate.shelf] = books[bookToUpdate.shelf].filter(
       b => b.id !== id
     );
-    bookToUpdate.shelf = newShelf;
-    books[newShelf].push(bookToUpdate);
+    // if new shelf selected add book to new shelf
+    if (newShelf !== 'none') {
+      bookToUpdate.shelf = newShelf;
+      books[newShelf].push(bookToUpdate);
+    }
     this.updateStateAndStorage(books)
   };
 
@@ -98,7 +103,7 @@ class BooksApp extends React.Component {
               this.state.books && 
               <BooksList
                 books={this.state.books}
-                updateBookList={this.updateBooks}
+                updateBookList={this.updateBookList}
               />
             )}
           />
@@ -108,7 +113,7 @@ class BooksApp extends React.Component {
             render={() => (
               <Search
                 addBook={(book, shelf) => {
-                  this.addBook(book, shelf);
+                  this.updateBookListFromSearchView(book, shelf);
                 }}
                 books={this.state.books}
               />

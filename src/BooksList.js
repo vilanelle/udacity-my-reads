@@ -1,19 +1,12 @@
-import React from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { SHELFNAMES }  from "./Constants";
 
-class BooksList extends React.Component {
-  shelfNames = {
-    currentlyReading: "Currently Reading",
-    wantToRead: "Want to Read",
-    read: "Read"
-  };
+class BooksList extends Component {
 
   handleOnChange = e => {
     const newShelf = e.target.value;
     const id = e.target.dataset.key;
-    if (newShelf === "none") {
-      return;
-    }
     this.props.updateBookList(newShelf, id);
   };
 
@@ -87,7 +80,7 @@ class BooksList extends React.Component {
   getBookShelf = (shelf, shelfName) => {
     return (
       <div className="bookshelf" key={shelfName}>
-        <h2 className="bookshelf-title">{this.shelfNames[shelfName]}</h2>
+        <h2 className="bookshelf-title">{SHELFNAMES[shelfName]}</h2>
         <div className="bookshelf-books">
           <ol className="books-grid">
             {shelf.map(book => {
