@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { SHELFNAMES }  from "./Constants";
+import Select from './Select';
 
 class BooksList extends Component {
 
@@ -10,43 +11,43 @@ class BooksList extends Component {
     this.props.updateBookList(newShelf, id);
   };
 
-  getActiveShelfClass = (shelf, value) => {
-    return shelf === value ? "selected" : "";
-  };
+  // getActiveShelfClass = (shelf, value) => {
+  //   return shelf === value ? "selected" : "";
+  // };
 
-  getSelect = book => {
-    return (
-      <select
-        data-key={book.id}
-        data-shelf={book.shelf}
-        onChange={this.handleOnChange}
-        value={book.shelf}
-      >
-        <option value="none" disabled>
-          Move to...
-        </option>
-        <option
-          value="currentlyReading"
-          className={this.getActiveShelfClass(book.shelf, "currentlyReading")}
-        >
-          Currently Reading
-        </option>
-        <option
-          value="wantToRead"
-          className={this.getActiveShelfClass(book.shelf, "wantToRead")}
-        >
-          Want to Read
-        </option>
-        <option
-          value="read"
-          className={this.getActiveShelfClass(book.shelf, "read")}
-        >
-          Read
-        </option>
-        <option value="none">None</option>
-      </select>
-    );
-  };
+  // getSelect = book => {
+  //   return (
+  //     <select
+  //       data-key={book.id}
+  //       data-shelf={book.shelf}
+  //       onChange={this.handleOnChange}
+  //       value={book.shelf}
+  //     >
+  //       <option value="none" disabled>
+  //         Move to...
+  //       </option>
+  //       <option
+  //         value="currentlyReading"
+  //         className={this.getActiveShelfClass(book.shelf, "currentlyReading")}
+  //       >
+  //         Currently Reading
+  //       </option>
+  //       <option
+  //         value="wantToRead"
+  //         className={this.getActiveShelfClass(book.shelf, "wantToRead")}
+  //       >
+  //         Want to Read
+  //       </option>
+  //       <option
+  //         value="read"
+  //         className={this.getActiveShelfClass(book.shelf, "read")}
+  //       >
+  //         Read
+  //       </option>
+  //       <option value="none">None</option>
+  //     </select>
+  //   );
+  // };
 
   getBookDetails = book => {
     return (
@@ -63,7 +64,13 @@ class BooksList extends Component {
                   book.imageLinks.thumbnail}")`
               }}
             />
-            <div className="book-shelf-changer">{this.getSelect(book)}</div>
+            <div className="book-shelf-changer">
+            {/* {this.getSelect(book)} */}
+            <Select 
+            book={book}
+            handleOnChange={this.handleOnChange}
+            />
+            </div>
           </div>
           <div className="book-title">{book.title && book.title}</div>
           <div className="book-authors">
