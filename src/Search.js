@@ -18,7 +18,7 @@ class Search extends Component {
       this.setState({ booksFound: [] });
       this.setState({ prompt: "" });
       BooksAPI.search(query).then(res => {
-        // handle empty API response
+   // handle empty API response
         if (!res.error) {
           this.setState({ booksFound: res });
         } else {
@@ -29,7 +29,7 @@ class Search extends Component {
         }
       });
     } else {
-      // prompt for search input if input null
+   // prompt for search input if input null
       this.setState({ prompt: "Please enter search term" });
       this.setState({ booksFound: [] });
     }
@@ -47,18 +47,13 @@ class Search extends Component {
     this.props.addBook(bookToAdd, shelf);
   };
   
-  // current book shelf should be reflected in select display & value
-  // getActiveShelfClass = (shelf, value) => {
-  //   return shelf === value ? "selected" : "";
-  // };
-
-  getActiveSelectOption = id => {
+  getActiveSelectOption = book => {
     const { books } = this.props;
     const shelves = Object.keys(this.props.books);
     let currShelf = "none";
     shelves.map(shelf => {
-      books[shelf].map(book => {
-        if (id === book.id) {
+      books[shelf].map(b => {
+        if (book.id === b.id) {
           currShelf = shelf;
         }
         return null;
@@ -68,43 +63,6 @@ class Search extends Component {
 
     return currShelf;
   };
-
-  // getSelect = book => {
-  //   const currShelf = this.getActiveSelectOption(book.id);
-  //   return (
-  //     <select
-  //       data-key={book.id}
-  //       onChange={this.handleOnChange}
-  //       defaultValue={currShelf}
-  //     >
-  //       <option value="none" disabled>
-  //         Add to app...
-  //       </option>
-  //       <option
-  //         value="currentlyReading"
-  //         className={this.getActiveShelfClass(currShelf, "currentlyReading")}
-  //       >
-  //         Currently Reading
-  //       </option>
-  //       <option
-  //         value="wantToRead"
-  //         className={this.getActiveShelfClass(currShelf, "wantToRead")}
-  //       >
-  //         Want to Read
-  //       </option>
-  //       <option
-  //         value="read"
-  //         className={this.getActiveShelfClass(currShelf, "read")}
-  //       >
-  //         Read
-  //       </option>
-  //       <option
-  //           value="none"
-  //           className={this.getActiveShelfClass(currShelf, "none")}
-  //       >None</option>
-  //     </select>
-  //   );
-  // };
 
   render() {
     return (
@@ -153,10 +111,10 @@ class Search extends Component {
                         }}
                       />
                       <div className="book-shelf-changer">
-                        {/* {this.getSelect(book)} */}
                         <Select
                          book={book}
                          handleOnChange={this.handleOnChange}
+                         getActiveSelectOption={this.getActiveSelectOption}
                         />
                       </div>
                     </div>

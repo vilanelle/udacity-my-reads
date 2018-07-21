@@ -90,6 +90,7 @@ class BooksApp extends Component {
   };
 
   render() {
+    const { books } = this.state;
     return (
       <div className="app">
         <div className="list-books">
@@ -100,9 +101,9 @@ class BooksApp extends Component {
             exact
             path="/"
             render={() => (
-              this.state.books && 
+              books && 
               <BooksList
-                books={this.state.books}
+                books={books}
                 updateBookList={this.updateBookList}
               />
             )}
@@ -115,7 +116,7 @@ class BooksApp extends Component {
                 addBook={(book, shelf) => {
                   this.updateBookListFromSearchView(book, shelf);
                 }}
-                books={this.state.books}
+                books={books}
               />
             )}
           />
